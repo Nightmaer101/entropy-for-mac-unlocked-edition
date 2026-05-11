@@ -3,30 +3,51 @@
 Horror Game: The Haunted House
 A text-based adventure game with a dark atmosphere.
 Meets all requirements: function, user input, print statements, purpose.
+Can run in background - all output goes to a log file.
 """
 
 import time
 import random
+import sys
+from datetime import datetime
+
+# Log file path
+LOG_FILE = "horror_game_log.txt"
+
+def log_print(text=""):
+    """Print to both console AND save to log file"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"[{timestamp}] {text}"
+    print(log_entry)
+    with open(LOG_FILE, "a") as f:
+        f.write(log_entry + "\n")
 
 def print_slow(text, delay=0.05):
-    """Function that prints text slowly for dramatic effect"""
+    """Function that prints text slowly for dramatic effect AND logs it"""
     for char in text:
-        print(char, end='', flush=True)
+        sys.stdout.write(char)
+        sys.stdout.flush()
         time.sleep(delay)
-    print()
+    sys.stdout.write("\n")
+    sys.stdout.flush()
+    
+    # Also log the full text
+    with open(LOG_FILE, "a") as f:
+        f.write(text + "\n")
 
 def display_title():
     """Display the game title"""
-    print("\n" + "="*60)
+    log_print("\n" + "="*60)
     print_slow("🏚️  WELCOME TO THE HAUNTED HOUSE 🏚️", delay=0.03)
-    print("="*60)
+    log_print("="*60)
     time.sleep(1)
 
 def game_start():
     """Main game function - called to start the game"""
+    log_print("\n--- GAME STARTED ---")
     display_title()
     
-    print("\n📖 STORY:")
+    log_print("\n📖 STORY:")
     print_slow("You wake up in an abandoned mansion with no memory of how you got here...", delay=0.04)
     time.sleep(1)
     print_slow("The doors are locked. Strange sounds echo through the halls.", delay=0.04)
@@ -46,17 +67,18 @@ def play_game():
     
     while not escaped and turns < max_turns:
         turns += 1
-        print(f"\n--- Turn {turns}/{max_turns} ---")
+        log_print(f"\n--- Turn {turns}/{max_turns} ---")
         
         if current_room == "entrance":
-            print_slow("\n🚪 You stand in the MAIN ENTRANCE of the mansion.", delay=0.03)
-            print("The walls are covered in cobwebs. You hear whispers...")
-            print("\nWhat do you do?")
-            print("1. Go to the LIBRARY (left hallway)")
-            print("2. Go to the KITCHEN (right hallway)")
-            print("3. Go to the BASEMENT (downstairs)")
+            log_print("\n🚪 You stand in the MAIN ENTRANCE of the mansion.")
+            log_print("The walls are covered in cobwebs. You hear whispers...")
+            log_print("\nWhat do you do?")
+            log_print("1. Go to the LIBRARY (left hallway)")
+            log_print("2. Go to the KITCHEN (right hallway)")
+            log_print("3. Go to the BASEMENT (downstairs)")
             
             choice = input("\n👻 Your choice (1-3): ").strip()
+            log_print(f"Player chose: {choice}")
             
             if choice == "1":
                 current_room = "library"
@@ -65,21 +87,22 @@ def play_game():
             elif choice == "3":
                 current_room = "basement"
             else:
-                print("⚠️  Invalid choice. Try again.")
+                log_print("⚠️  Invalid choice. Try again.")
                 continue
         
         elif current_room == "library":
             print_slow("\n📚 You enter a dusty LIBRARY.", delay=0.03)
-            print("Books float off shelves on their own...")
+            log_print("Books float off shelves on their own...")
             print_slow("A shadowy figure appears in the corner of your eye!", delay=0.04)
             time.sleep(1)
             
-            print("\nWhat do you do?")
-            print("1. Read the ancient book on the table")
-            print("2. Run back to entrance")
-            print("3. Look for a secret exit")
+            log_print("\nWhat do you do?")
+            log_print("1. Read the ancient book on the table")
+            log_print("2. Run back to entrance")
+            log_print("3. Look for a secret exit")
             
             choice = input("\n👻 Your choice (1-3): ").strip()
+            log_print(f"Player chose: {choice}")
             
             if choice == "1":
                 print_slow("\n🔮 The book reveals the EXIT CODE: 1337", delay=0.04)
@@ -90,20 +113,21 @@ def play_game():
                 print_slow("\n✨ You find a hidden passage leading to the STUDY!", delay=0.04)
                 current_room = "study"
             else:
-                print("⚠️  Invalid choice. Try again.")
+                log_print("⚠️  Invalid choice. Try again.")
                 continue
         
         elif current_room == "kitchen":
             print_slow("\n🔪 You enter the KITCHEN.", delay=0.03)
-            print("Everything is rotting. Something moves in the shadows...")
+            log_print("Everything is rotting. Something moves in the shadows...")
             print_slow("You hear footsteps getting closer!", delay=0.04)
             
-            print("\nWhat do you do?")
-            print("1. Hide in the pantry")
-            print("2. Run back to entrance")
-            print("3. Grab a weapon and fight")
+            log_print("\nWhat do you do?")
+            log_print("1. Hide in the pantry")
+            log_print("2. Run back to entrance")
+            log_print("3. Grab a weapon and fight")
             
             choice = input("\n👻 Your choice (1-3): ").strip()
+            log_print(f"Player chose: {choice}")
             
             if choice == "1":
                 print_slow("\n😰 You hide. The footsteps pass by...", delay=0.04)
@@ -116,20 +140,21 @@ def play_game():
                 current_room = "front_door"
                 escaped = True
             else:
-                print("⚠️  Invalid choice. Try again.")
+                log_print("⚠️  Invalid choice. Try again.")
                 continue
         
         elif current_room == "basement":
             print_slow("\n⚫ You descend into the BASEMENT.", delay=0.03)
-            print("It's pitch black. You can barely see...")
+            log_print("It's pitch black. You can barely see...")
             print_slow("The temperature drops. You hear chains rattling!", delay=0.04)
             
-            print("\nWhat do you do?")
-            print("1. Light a torch and explore")
-            print("2. Run back upstairs immediately")
-            print("3. Call out for help")
+            log_print("\nWhat do you do?")
+            log_print("1. Light a torch and explore")
+            log_print("2. Run back upstairs immediately")
+            log_print("3. Call out for help")
             
             choice = input("\n👻 Your choice (1-3): ").strip()
+            log_print(f"Player chose: {choice}")
             
             if choice == "1":
                 print_slow("\n🔥 The torch reveals a TREASURE CHEST with a KEY!", delay=0.04)
@@ -140,22 +165,24 @@ def play_game():
             elif choice == "3":
                 print_slow("\n👹 A demon appears and drags you deeper!", delay=0.04)
                 print_slow("GAME OVER - YOU FAILED", delay=0.05)
+                log_print("\n❌ GAME OVER - DEMON ATTACK")
                 return
             else:
-                print("⚠️  Invalid choice. Try again.")
+                log_print("⚠️  Invalid choice. Try again.")
                 continue
         
         elif current_room == "study":
             print_slow("\n📜 You enter a hidden STUDY.", delay=0.03)
-            print("Ancient artifacts cover the shelves...")
+            log_print("Ancient artifacts cover the shelves...")
             print_slow("You find a glowing crystal and a locked door!", delay=0.04)
             
-            print("\nWhat do you do?")
-            print("1. Take the crystal")
-            print("2. Go back to library")
-            print("3. Use crystal on locked door")
+            log_print("\nWhat do you do?")
+            log_print("1. Take the crystal")
+            log_print("2. Go back to library")
+            log_print("3. Use crystal on locked door")
             
             choice = input("\n👻 Your choice (1-3): ").strip()
+            log_print(f"Player chose: {choice}")
             
             if choice == "1" or choice == "3":
                 print_slow("\n✨ The crystal unlocks the door to FREEDOM!", delay=0.04)
@@ -164,7 +191,7 @@ def play_game():
             elif choice == "2":
                 current_room = "library"
             else:
-                print("⚠️  Invalid choice. Try again.")
+                log_print("⚠️  Invalid choice. Try again.")
                 continue
         
         elif current_room == "front_door":
@@ -178,28 +205,35 @@ def play_game():
     
     # Game ending
     if escaped:
-        print("\n" + "="*60)
+        log_print("\n" + "="*60)
         print_slow("🌅 THE DOOR SWINGS OPEN", delay=0.03)
         print_slow("You burst into the sunlight and RUN!", delay=0.03)
         print_slow("You're FREE! The mansion fades behind you...", delay=0.03)
-        print("="*60)
+        log_print("="*60)
         print_slow("\n✅ CONGRATULATIONS! YOU ESCAPED THE HAUNTED HOUSE!", delay=0.03)
-        print("="*60)
+        log_print("="*60)
+        log_print("\n--- GAME WON ---")
     else:
-        print("\n" + "="*60)
+        log_print("\n" + "="*60)
         print_slow("⏰ MIDNIGHT STRIKES!", delay=0.03)
         print_slow("The doors seal shut forever...", delay=0.03)
-        print("="*60)
+        log_print("="*60)
         print_slow("\n❌ GAME OVER - YOU DIDN'T ESCAPE IN TIME", delay=0.03)
-        print("="*60)
+        log_print("="*60)
+        log_print("\n--- GAME LOST ---")
 
 def main():
     """Entry point - calls the game_start function"""
     try:
+        log_print("\n" + "="*60)
+        log_print("HORROR GAME SESSION STARTED")
+        log_print("="*60)
         game_start()
     except KeyboardInterrupt:
+        log_print("\n⏸️  Game interrupted by user")
         print("\n\n⏸️  Game interrupted. Thanks for playing!")
     except Exception as e:
+        log_print(f"\n❌ Error: {e}")
         print(f"\n❌ Error: {e}")
 
 # Execute the main function when script runs
